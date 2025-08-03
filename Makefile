@@ -14,7 +14,7 @@ FLAGS := -trimpath
 LDFLAGS := -s -w -X main.Version=$(VERSION) -X main.CurrentCommit=$(COMMIT)
 
 # 声明伪目标
-.PHONY: all build run gotool clean help linux-amd64 linux-arm64 linux-arm linux-386 windows-amd64 windows-arm64 windows-386 darwin-amd64 darwin-arm64 build-all
+.PHONY: all build run gotool clean help linux-amd64 linux-arm64 linux-arm linux-386 windows-amd64 windows-arm64 windows-386 darwin-amd64 darwin-arm64 build-all android
 
 # 默认目标：整理代码并编译当前环境
 all:  build
@@ -71,6 +71,10 @@ build-all:
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=darwin GOARCH=amd64 $(GO_BIN) build -o build/$(BINARY)_darwin_amd64 $(FLAGS) -ldflags "$(LDFLAGS)"; \
 	CGO_ENABLED=$(CGO_ENABLED) GOOS=darwin GOARCH=arm64 $(GO_BIN) build -o build/$(BINARY)_darwin_arm64 $(FLAGS) -ldflags "$(LDFLAGS)"
 
+# Android 平台
+android:
+	set PATH=%PATH%;$(GOPATH)\bin && gomobile bind -o ..\app\libs\subslib.aar -target=android .
+
 # 帮助信息
 help:
 	@echo "make              - 整理 Go 代码并编译当前环境的二进制文件"
@@ -88,4 +92,5 @@ help:
 	@echo "make darwin-amd64 - 编译 macOS/amd64 二进制文件"
 	@echo "make darwin-arm64 - 编译 macOS/arm64 二进制文件"
 	@echo "make build-all    - 编译所有指定平台的二进制文件到 build/ 目录"
+	@echo "make android      - 编译 Android .aar 文件"
 	@echo "make help         - 显示此帮助信息"
